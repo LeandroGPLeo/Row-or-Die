@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Row or Die · Laboratorio de relevos</title>
+<style>
+:root{--bg:#f3f5f5;--ink:#172b32;--muted:#5b6c72;--line:#dce3e4;--green:#007e76;--c0:#007e76;--c1:#4285b6;--c2:#b38330;--c3:#9271ac;--c4:#d17861}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1400px;margin:auto;padding:32px}header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:28px}h1{font-size:34px;letter-spacing:-1.2px;margin:3px 0}h2{font-size:18px;margin:0 0 16px}h3{font-size:15px}p{line-height:1.6}.eyebrow{font-size:11px;font-weight:750;letter-spacing:2px;color:var(--green)}.sub,.hint{color:var(--muted);font-size:13px}.sub{margin:8px 0 0}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.field label{display:block;font-size:12px;font-weight:650;margin-bottom:7px}input,select,button{font:inherit}input,select{padding:9px;border:1px solid #cbd5d7;border-radius:7px;color:var(--ink);background:white;width:100%;min-width:65px}input:focus,select:focus,button:focus-visible{outline:3px solid #9ed8d2;outline-offset:2px}button{padding:10px 15px;border:1px solid #cbd5d7;border-radius:8px;background:white;color:var(--ink);font-weight:650;cursor:pointer}button:hover{background:#edf4f3}button.primary{background:var(--green);color:white;border-color:var(--green)}button:disabled{opacity:.5;cursor:wait}.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;text-align:left}th{font-size:11px;color:var(--muted);font-weight:650;background:#f6f8f8}th,td{padding:11px 8px;border-bottom:1px solid #e7ecec;white-space:nowrap}table input{width:82px;padding:8px}input.name{width:130px}.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.metric{background:white;border:1px solid var(--line);border-radius:12px;padding:18px}.metric .value{font-size:29px;font-weight:750;letter-spacing:-.7px;margin:7px 0}.metric small{color:var(--muted)}.columns{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}.notice{padding:13px 16px;background:#eaf5f2;border-radius:8px;color:#22534e;font-size:13px;line-height:1.6;margin-top:14px}.error{background:#fff0e7;color:#8a4317}.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;margin:12px 0}.timeline{height:38px;display:flex;border-radius:6px;overflow:hidden;background:#edf0f0}.segment{height:100%;min-width:0;border-right:1px solid #ffffff70}.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}svg{width:100%;display:block}.curve-label{font-size:11px;fill:var(--muted)}details summary{cursor:pointer;font-weight:650}details p,details li{color:var(--muted);font-size:13px;line-height:1.7}.status{font-size:12px;color:var(--muted)}#result{scroll-margin-top:15px}#schedule{max-height:340px;overflow:auto}.badge{border-radius:20px;padding:5px 10px;background:#e5efed;font-size:11px;white-space:nowrap}footer{color:var(--muted);font-size:12px;margin:20px 0}.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.compare>div{padding:14px;background:#f5f8f8;border-radius:8px}.compare strong{display:block;font-size:21px;margin:6px 0}.right{margin-left:auto}.tiny{font-size:11px;color:var(--muted)}@media(max-width:850px){main{padding:18px}.controls,.metrics{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}header{align-items:flex-start}h1{font-size:28px}.card{padding:16px}.metric .value{font-size:24px}}@media print{body{background:white}main{padding:0}button,.setup,details{display:none}.card{break-inside:avoid}#schedule{max-height:none;overflow:visible}}
+
+/* Touch inputs avoid automatic zoom in Safari. Tables become individual cards. */
+@media(max-width:650px){
+ .columns{grid-template-columns:minmax(0,1fr)}.columns>*{min-width:0}
+
+ input,select{font-size:16px;min-height:44px}button{min-height:44px}
+ header{display:block}header .badge{display:inline-block;margin-top:12px}
+ .controls{gap:12px}.controls .field:nth-child(3){grid-column:1/-1}
+ .athlete-table,.athlete-table tbody{display:block;width:100%}
+ .athlete-table thead{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .athlete-table tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:#f6f8f8;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
+ .athlete-table td{display:block;padding:0;border:0;white-space:normal;min-width:0}
+ .athlete-table td:before{content:attr(data-label);display:block;font-size:11px;font-weight:650;color:var(--muted);line-height:1.4;min-height:31px;margin-bottom:5px}
+ .athlete-table td:first-child{grid-column:1/-1;font-weight:700;display:flex;align-items:center;gap:4px}
+ .athlete-table td:first-child:before{display:none}
+ .athlete-table input,.athlete-table input.name{width:100%;min-width:0}
+ .athlete-table input.name{width:calc(100% - 35px)}
+ .compare{grid-template-columns:1fr}.compare>div{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.compare strong{font-size:20px}
+ .actions>button{flex:1 1 45%}.actions>.right{margin-left:0}
+ .metric{padding:13px}.metric .value{font-size:23px}.card{padding:15px}
+ main{padding:14px}h1{font-size:27px}.notice{overflow-wrap:anywhere}
+}
+.controls{grid-template-columns:repeat(3,minmax(0,1fr))}.order-field{grid-column:span 2}@media(max-width:850px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.order-field{grid-column:1/-1}.controls .field:nth-child(3){grid-column:auto}}
+</style></head><body><main>
+<noscript><section class="card notice error">Este visor no ejecuta los cálculos. <a href="https://row-or-die-leo.palemirth8.chatgpt.site">Abre el simulador web en Safari</a>.</section></noscript><div id="localhint" class="notice" hidden>Para usarlo en iPhone, <a href="https://row-or-die-leo.palemirth8.chatgpt.site">abre la versión web en Safari</a>. Las vistas previas de archivos pueden desactivar los cálculos.</div><header><div><div class="eyebrow">ROW OR DIE / ESTRATEGIA DE EQUIPO</div><h1>Más metros. Mejores relevos.</h1><p class="sub">Simula 90 minutos, ajusta la fatiga y busca un reparto que funcione para tu equipo.</p></div><span class="badge">5 remeros · Concept2</span></header>
+<section class="card setup"><h2>01 / Condiciones de carrera</h2><div class="controls">
+<div class="field"><label for="race">Duración de carrera · min</label><input id="race" type="number" value="90" min="1" max="240" step="1"></div>
+<div class="field"><label for="change">Pérdida efectiva por cambio · s</label><input id="change" type="number" value="5" min="0" max="60" step="0.5"></div>
+
+<div class="field"><label for="grid">Paso del optimizador · min</label><select id="grid"><option value="0.5">0,5 min</option><option value="1">1 min</option><option value="0.25">0,25 min</option></select></div><div class="field"><label for="orderMode">Orden de entrada</label><select id="orderMode"><option value="free">Optimizar orden y frecuencia</option><option value="fixed">Respetar mi orden</option></select></div><div class="field order-field"><label for="sequence">Orden cíclico / punto de partida · 1 al 5</label><input id="sequence" value="1,2,3,1,4,5" aria-describedby="orderhint"></div>
+</div><p id="orderPreview" class="hint"></p><p id="orderhint" class="hint">El orden se repite hasta completar el tiempo. Puedes repetir a un remero: 1,2,3,1,4,5. La pérdida por cambio incluye entrada y aceleración; se modela como tiempo equivalente sin sumar metros.</p></section>
+<section class="card setup"><h2>02 / Remeros y límites</h2><p class="hint">El parcial fresco es el ritmo antes de acumular fatiga. Los minutos mínimos y máximos son de trabajo efectivo, excluyen cambios y se aplican también a la simulación.</p><div class="tablewrap"><table class="athlete-table"><thead><tr><th>Remero</th><th>Parcial fresco<br>min:ss /500 m</th><th>Relevo actual<br>min</th><th>Relevo mínimo<br>min</th><th>Relevo máximo<br>min</th><th>Mín. total<br>min</th><th>Máx. total<br>min</th></tr></thead><tbody id="athletes"></tbody></table></div></section>
+<section class="card setup"><h2>03 / Curva de fatiga individual</h2><p class="hint">Valores ilustrativos: no están medidos. Un deterioro de 6 s al minuto 5 significa que el ritmo instantáneo pasa, por ejemplo, de 1:50 a 1:56 al final de un relevo aislado, antes de añadir la fatiga residual.</p><div class="tablewrap"><table class="athlete-table"><thead><tr><th>Remero</th><th>Deterioro al min 5<br>s /500 m</th><th>Forma de caída<br>exponente</th><th>Fatiga residual<br>s por 10 min de carga</th><th>Semivida de recuperación<br>min de descanso</th></tr></thead><tbody id="fatigue"></tbody></table></div><div class="columns" style="margin-top:18px"><div><h3>Ritmo en un relevo empezando fresca/o</h3><div id="curves"></div><div class="legend" id="curvelegend"></div></div><div><h3>Cómo interpretar la curva</h3><p class="hint">El exponente 1 da una caída lineal; 2 hace que el deterioro se acelere al alargar el relevo. La fatiga residual aumenta con el trabajo y se reduce exponencialmente al descansar.</p><p class="hint">Con semivida de 4 minutos, 4 minutos de descanso eliminan la mitad de la carga residual y 8 eliminan el 75 %. Poner ambos deterioros a cero permite comparar solo parciales, tiempos y cambios.</p><button id="zero">Desactivar fatiga</button></div></div></section>
+<section class="card setup"><div class="actions"><button class="primary" id="simulate">Simular estrategia</button><button id="optimize">Optimizar reparto y relevos</button><button id="export">Exportar plan CSV</button><button id="save">Guardar parámetros</button><button id="load">Cargar parámetros</button><button id="reset" class="right">Restablecer ejemplo</button></div><p class="hint">Elige «Respetar mi orden» para ajustar solo las duraciones, u «Optimizar orden y frecuencia» para buscar también quién entra, cuándo y cuántas veces por ciclo. Usa parciales, fatiga y recuperación, respetando los límites totales. Es una búsqueda heurística, sin garantía de óptimo global.</p><p><label><input id="compat" type="checkbox" style="width:auto;min-width:0;min-height:0;margin-right:8px">Modo compatible para navegadores o visores con restricciones</label></p><span id="status" class="status" role="status" aria-live="polite"></span><div id="messages" role="alert"></div></section>
+<section id="result"><div class="metrics"><div class="metric"><small>Distancia proyectada</small><div class="value" id="distance">—</div><small>Metros con cambios y fatiga</small></div><div class="metric"><small>Parcial de equipo</small><div class="value" id="pace">—</div><small>Incluye todo el tiempo de carrera</small></div><div class="metric"><small>Coste de los cambios</small><div class="value" id="lost">—</div><small id="changeslabel">—</small></div><div class="metric"><small>Trabajo de Leo / remero 1</small><div class="value" id="share">—</div><small id="sharelabel">—</small></div></div>
+<div class="card"><h2>Comparación con rotaciones de 2 y 5 minutos</h2><p class="hint">Mismo orden y mismos parámetros, cambiando únicamente la duración objetivo de todos los relevos. Los límites totales se conservan; los límites mínimo/máximo de relevo solo guían al optimizador. Los relevos finales pueden truncarse.</p><div class="compare" id="compare"></div><div id="optimization"></div></div>
+<div class="card"><h2>Plan de carrera</h2><div id="timeline" class="timeline"></div><div class="axis"><span>0 min</span><span id="middle">45 min</span><span id="end">90 min</span></div><div id="legend" class="legend"></div><div class="tablewrap"><table><thead><tr><th>Remero</th><th>Trabajo</th><th>% de carrera</th><th>Metros</th><th>Parcial medio activo</th><th>Relevos</th></tr></thead><tbody id="summary"></tbody></table></div></div>
+<div class="columns"><div class="card"><h2>Distancia acumulada</h2><div id="distancechart"></div></div><div class="card"><h2>Relevos y cambios</h2><div id="schedule"><table><thead><tr><th>Inicio → fin</th><th>Remero</th><th>Duración</th><th>Metros</th><th>Parcial</th></tr></thead><tbody id="stints"></tbody></table></div></div></div>
+</section><details class="card"><summary>Modelo, supuestos y uso del optimizador</summary><p>Distancia = integral de 500 / parcial(t), con el parcial expresado en segundos por 500 m. Se integra por intervalos de hasta 5 segundos mediante punto medio. Cada relevo tiene su propia curva y conserva la carga residual de las entradas anteriores.</p><p>Parcial(t) = parcial fresco + deterioro a 5 min × (t / 5 min)<sup>exponente</sup> + deterioro residual × (carga al inicio + t) / 10 min. La carga al inicio es la carga al final del relevo anterior multiplicada por 2<sup>−descanso / semivida</sup>. El descanso incluye los cambios y los turnos de otros remeros. El deterioro local se reinicia en cada entrada; la carga residual no.</p><p>La carga residual es un modelo simplificado y ajustable; no representa una medición fisiológica. El deterioro local describe el esfuerzo continuo y el residual la recuperación incompleta. Calibrad ambos con varios relevos reales para evitar contar dos veces el mismo deterioro.</p><p>Los cambios restan tiempo al reloj de 90 minutos, sin sumar metros. No se carga un cambio inicial ni después de terminar. El primer remero empieza preparado; el último relevo y el último cambio se cortan al agotarse el tiempo. Cuando un remero alcanza su máximo total, se omiten sus siguientes entradas. Si ya no queda nadie disponible, el tiempo restante queda inactivo. Los relevos contiguos de una misma persona se fusionan sin cambio ni reinicio de su fatiga local.</p><p>Los mínimos totales se verifican al final. El optimizador solo entrega propuestas que los cumplan, junto con los máximos; si no encuentra una propuesta válida, conserva tu estrategia y lo indica. Los mínimos y máximos de relevo definen las duraciones objetivo de búsqueda, con truncamientos al final o al alcanzar el máximo total.</p><p>En modo fijo, la búsqueda conserva exactamente tu secuencia y ajusta las duraciones. En modo libre, examina las 120 permutaciones de los cinco remeros, patrones con entradas repetidas y mejoras por intercambio, movimiento, inserción y eliminación de entradas. Alterna esos cambios con ajustes de duración. Puede dejar soluciones mejores sin explorar. Las curvas y límites que introduzcas determinan el resultado: una propuesta matemática no demuestra que los ritmos sean sostenibles.</p><p>Referencia de conversión: <a href="https://www.concept2.com/training/pace-calculator" target="_blank" rel="noopener">calculadora de ritmo de Concept2</a>. No se han supuesto reglas de participación de Row or Die: configura los límites según el reglamento.</p></details>
+<footer>Funciona sin conexión ni dependencias. Guardar parámetros descarga un JSON; cargarlo permite recuperar o compartir el escenario.</footer>
+</main><input id="file" type="file" accept="application/json,.json" hidden>
+<script>
+'use strict';
+const COLORS=['#007e76','#4285b6','#b38330','#9271ac','#d17861'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=(n,d=0)=>Number(n).toLocaleString('es-MX',{maximumFractionDigits:d,minimumFractionDigits:d});
+function clock(s){s=Math.round(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function split(s){if(!Number.isFinite(s))return '—';return clock(s)}
+function parsePace(v){const m=String(v).trim().match(/^(\d{1,2}):([0-5]\d)(?:[.,](\d+))?$/);if(!m)throw Error('Usa el formato min:ss para los parciales, por ejemplo 1:50.');const s=+m[1]*60 + +m[2]+(m[3]?Number('0.'+m[3]):0);if(s<60||s>600)throw Error('El parcial debe estar entre 1:00 y 10:00 /500 m.');return s}
+function defaults(){return {race:90,change:5,grid:.5,orderMode:"free",sequence:[0,1,2,0,3,4],athletes:Array.from({length:5},(_,i)=>({name:i?'Remero '+(i+1):'Leo',pace:i?150:110,stint:i?3:5,lo:1,hi:6,min:8,max:i?25:40,decay:i?8:6,exponent:2,residual:i?8:6,half:4}))}}
+let lastConfig,lastResult,lastOptimization=null;
+function numberInput(key,i,val,min,max,step){return `<input aria-label="${esc(key)} remero ${i+1}" data-i="${i}" data-key="${key}" type="number" value="${val}" min="${min}" max="${max}" step="${step}">`}
+function mount(c){$('race').value=c.race;$('change').value=c.change;$('grid').value=c.grid;$('orderMode').value=c.orderMode||'free';$('sequence').value=c.sequence.map(i=>i+1).join(',');$('athletes').innerHTML=c.athletes.map((a,i)=>`<tr><td><span class="dot" style="background:${COLORS[i]}"></span>${i+1}. <input class="name" aria-label="Nombre remero ${i+1}" data-i="${i}" data-key="name" value="${esc(a.name)}"></td><td><input aria-label="Parcial fresco remero ${i+1}" data-i="${i}" data-key="pace" value="${split(a.pace)}" inputmode="text" autocorrect="off" autocapitalize="off"></td>${[['stint',.25,30,.25],['lo',.25,30,.25],['hi',.25,30,.25],['min',0,240,.5],['max',0,240,.5]].map(([k,m,x,s])=>`<td>${numberInput(k,i,a[k],m,x,s)}</td>`).join('')}</tr>`).join('');$('fatigue').innerHTML=c.athletes.map((a,i)=>`<tr><td><span class="dot" style="background:${COLORS[i]}"></span><span data-fatname="${i}">${esc(a.name)}</span></td>${[['decay',0,120,.5],['exponent',.5,4,.5],['residual',0,120,.5],['half',.25,60,.25]].map(([k,m,x,s])=>`<td>${numberInput(k,i,a[k],m,x,s)}</td>`).join('')}</tr>`).join('');document.querySelectorAll('.athlete-table').forEach(table=>{const labels=[...table.querySelectorAll('th')].map(th=>[...th.childNodes].map(n=>n.nodeName==='BR'?' ':n.textContent).join('').replace(/\s+/g,' ').trim());table.querySelectorAll('tbody tr').forEach(tr=>[...tr.children].forEach((td,i)=>td.dataset.label=labels[i]));})}
+function read(){const c={race:+$('race').value,change:+$('change').value,grid:+$('grid').value,orderMode:$('orderMode').value,sequence:$('sequence').value.split(',').map(v=>{if(!/^[1-5]$/.test(v.trim()))throw Error('El orden debe contener números del 1 al 5 separados por comas.');return +v.trim()-1}),athletes:Array.from({length:5},()=>({}))};document.querySelectorAll('[data-key]').forEach(el=>{c.athletes[+el.dataset.i][el.dataset.key]=el.dataset.key==='name'?el.value.trim():el.dataset.key==='pace'?parsePace(el.value):el.value===''?NaN:+el.value});validate(c);return c}
+function validate(c){if(c.orderMode!==undefined&&!['fixed','free'].includes(c.orderMode))throw Error('Selecciona un modo de orden válido.');if(!c||!Array.isArray(c.athletes)||c.athletes.length!==5)throw Error('Se necesitan cinco remeros.');if(!Number.isFinite(c.race)||c.race<1||c.race>240||!Number.isFinite(c.change)||c.change<0||c.change>60||![.25,.5,1].includes(c.grid))throw Error('Revisa la duración (1–240 min), el cambio (0–60 s) y el paso de búsqueda.');if(!Array.isArray(c.sequence)||!c.sequence.length||c.sequence.length>40||c.sequence.some(i=>!Number.isInteger(i)||i<0||i>4))throw Error('El orden debe tener de 1 a 40 entradas válidas.');c.athletes.forEach((a,i)=>{if(typeof a.name!=='string'||!a.name.trim()||a.name.length>60)throw Error('Revisa el nombre del remero '+(i+1));for(const k of ['pace','stint','lo','hi','min','max','decay','exponent','residual','half'])if(!Number.isFinite(a[k]))throw Error('Falta un valor numérico en '+a.name);if(a.pace<60||a.pace>600||a.lo<.25||a.hi>30||a.lo>a.hi||a.stint<.25||a.stint>30||a.min<0||a.max<a.min||a.max>240||a.decay<0||a.decay>120||a.residual<0||a.residual>120||a.half<.25||a.half>60||a.exponent<.5||a.exponent>4)throw Error('Revisa los límites y la curva de '+a.name);});if(c.athletes.reduce((s,a)=>s+a.min,0)>c.race+1e-8)throw Error('La suma de mínimos supera el tiempo de carrera.');return c}
+// Pure model, shared by the page, optimizer worker and automated checks.
+function simulate(c,detailed=true){const T=c.race*60,stats=c.athletes.map(()=>({time:0,meters:0,turns:0,debt:0,end:0})),events=[],points=[[0,0]];let t=0,meters=0,changes=0,lost=0,pos=0,last=-1,local=0,currentDebt=0,loops=0;
+while(t<T-1e-8&&loops++<20000){let i=-1;for(let tries=0;tries<c.sequence.length;tries++){const q=c.sequence[pos++%c.sequence.length];if(stats[q].time<c.athletes[q].max*60-1e-7){i=q;break}}if(i<0){if(detailed)events.push({type:'idle',start:t,end:T,meters:0});t=T;break}const a=c.athletes[i],s=stats[i];if(last!==i){if(last>=0){const d=Math.min(c.change,T-t);if(d>0){if(detailed)events.push({type:'change',start:t,end:t+d,meters:0});t+=d;lost+=d;changes++;if(detailed)points.push([t,meters]);if(t>=T-1e-8)break}else changes++}local=0;currentDebt=s.debt*Math.pow(2,-Math.max(0,t-s.end)/(a.half*60));s.turns++}
+const start=t,len=Math.min(a.stint*60,T-t,a.max*60-s.time);if(len<1e-8)break;let dm=0;for(let v=0;v<len-1e-9;){const step=Math.min(5,len-v),elapsed=local+v+step/2;const p=a.pace+a.decay*Math.pow(elapsed/300,a.exponent)+a.residual*(currentDebt+elapsed)/600;dm+=step*500/p;v+=step}
+t+=len;meters+=dm;s.time+=len;s.meters+=dm;local+=len;s.debt=currentDebt+local;s.end=t;
+if(detailed){const prev=events[events.length-1];if(last===i&&prev&&prev.type==='row'&&prev.i===i){prev.end=t;prev.meters+=dm}else events.push({type:'row',i,start,end:t,meters:dm});points.push([t,meters])}last=i;
+}let deficit=0;stats.forEach((s,i)=>deficit+=Math.max(0,c.athletes[i].min*60-s.time));return {meters,stats,changes,lost,events,points,deficit,valid:deficit<1e-5,score:meters-deficit*30,elapsed:t}}
+function* optimizerSearch(c){
+ const free=(c.orderMode||'free')==='free',grids=c.athletes.map(a=>{
+  const arr=[a.lo,a.hi];for(let v=Math.ceil((a.lo-1e-8)/c.grid)*c.grid;v<=a.hi+1e-8;v+=c.grid)arr.push(+v.toFixed(5));
+  return [...new Set(arr)].sort((a,b)=>a-b);
+ });
+ const snap=(v,i)=>grids[i].reduce((x,y)=>Math.abs(y-v)<Math.abs(x-v)?y:x);
+ const initial=c.athletes.map((a,i)=>snap(a.stint,i));
+ let best=null,evals=0;const cache=new Map(),leaders=new Map();
+ function evaluate(seq,ds){
+  const key=seq.join(',')+'|'+ds.join(',');if(cache.has(key))return cache.get(key);
+  const plan={...c,sequence:seq.slice(),athletes:c.athletes.map((a,i)=>({...a,stint:ds[i]}))};
+  const r=simulate(plan,false);evals++;const candidate={seq:seq.slice(),ds:ds.slice(),score:r.score,meters:r.meters,valid:r.valid};
+  cache.set(key,candidate);
+  const skey=seq.join(','),prev=leaders.get(skey);if(!prev||candidate.score>prev.score)leaders.set(skey,candidate);
+  if(r.valid&&(!best||r.meters>best.meters+1e-7))best={meters:r.meters,c:plan};
+  return candidate;
+ }
+ function top(n){return [...leaders.values()].sort((a,b)=>b.score-a.score).slice(0,n)}
+ function* tune(seq,seed,passes=3){
+  let current=evaluate(seq,seed),ds=seed.slice();
+  for(let pass=0;pass<passes;pass++){
+   let changed=false;
+   for(let ii=0;ii<5;ii++){
+    const i=(ii+pass)%5;let chosen=current;
+    for(const d of grids[i]){const trial=ds.slice();trial[i]=d;const next=evaluate(seq,trial);if(next.score>chosen.score+1e-7)chosen=next}
+    if(chosen.score>current.score+1e-7){current=chosen;ds=chosen.ds.slice();changed=true}
+    yield {evals,phase:free?'Orden y duración':'Duración con orden fijo'};
+   }
+   if(!changed)break;
+  }
+  return current;
+ }
+ if(c.athletes.every(a=>a.stint>=a.lo&&a.stint<=a.hi))evaluate(c.sequence,c.athletes.map(a=>a.stint));
+ const templates=[],seen=new Set();
+ function add(seq){const key=seq.join(',');if(seq.length&&seq.length<=40&&!seen.has(key)){seen.add(key);templates.push(seq.slice())}}
+ add(c.sequence);
+ if(free){
+  function permute(head,tail){if(!tail.length){add(head);return}tail.forEach((v,j)=>permute([...head,v],tail.filter((_,i)=>i!==j)))}
+  permute([],[0,1,2,3,4]);
+  // Every athlete can be repeated: the fastest fresh pace need not recover best.
+  for(let i=0;i<5;i++){
+   const rest=[0,1,2,3,4].filter(x=>x!==i);
+   for(let shift=0;shift<4;shift++){
+    const o=rest.map((_,j)=>rest[(j+shift)%4]);
+    add([i,o[0],o[1],i,o[2],o[3]]);add([i,o[0],i,o[1],i,o[2],i,o[3]]);
+   }
+  }
+ }
+ for(let k=0;k<templates.length;k++){
+  for(const seed of [initial,c.athletes.map(a=>a.lo),c.athletes.map(a=>a.hi)])evaluate(templates[k],seed);
+  if(k%8===0)yield {evals,phase:'Explorando órdenes iniciales'};
+ }
+ const shortlisted=free?top(12):top(1);
+ for(const candidate of shortlisted){
+  for(const seed of [candidate.ds,initial,c.athletes.map(a=>a.lo),c.athletes.map(a=>a.hi)])yield* tune(candidate.seq,seed);
+ }
+ if(free){
+  // Mutate the strongest plans; optimize duration again after improving an order.
+  for(let round=0;round<3;round++){
+   const roots=top(4),roundSeen=new Set();let count=0;
+   for(const root of roots){
+    const seq=root.seq,mutants=[];
+    for(let i=0;i<seq.length;i++)for(let j=i+1;j<seq.length;j++){
+     const swap=seq.slice();[swap[i],swap[j]]=[swap[j],swap[i]];mutants.push(swap);
+    }
+    for(let i=0;i<seq.length;i++){
+     const rest=seq.filter((_,j)=>j!==i);
+     if(rest.includes(seq[i])||c.athletes[seq[i]].min===0)mutants.push(rest);
+     for(let j=0;j<=rest.length;j++){const move=rest.slice();move.splice(j,0,seq[i]);mutants.push(move)}
+    }
+    if(seq.length<12)for(let i=0;i<5;i++)for(let pos=0;pos<=seq.length;pos++){
+     const insert=seq.slice();insert.splice(pos,0,i);mutants.push(insert);
+    }
+    for(const order of mutants){
+     // Adjacent equal entries are one continuous stint, not a useful order edit.
+     if(!order.length||order.some((v,i)=>i&&v===order[i-1]))continue;
+     const key=order.join(',')+'|'+root.ds.join(',');if(roundSeen.has(key))continue;roundSeen.add(key);
+     evaluate(order,root.ds);if(++count%20===0)yield {evals,phase:'Afinando orden y frecuencia'};
+    }
+   }
+   for(const candidate of top(4))yield* tune(candidate.seq,candidate.ds,2);
+  }
+ }
+ return {best,evals,orders:leaders.size,mode:free?'free':'fixed'};
+}
+function optimizer(c){const search=optimizerSearch(c);let step;do{step=search.next()}while(!step.done);return step.value}
+
+function chart(points,w=650,h=220,unit='m'){const maxX=Math.max(1,...points.map(p=>p[0])),minY=0,maxY=Math.max(1,...points.map(p=>p[1]))*1.08,L=58,R=20,U=15,B=32;const x=v=>L+v/maxX*(w-L-R),y=v=>h-B-(v-minY)/(maxY-minY)*(h-U-B);let s=`<svg role="img" aria-label="Distancia acumulada en metros" viewBox="0 0 ${w} ${h}">`;for(let i=0;i<4;i++){const v=maxY*i/3;s+=`<line x1="${L}" x2="${w-R}" y1="${y(v)}" y2="${y(v)}" stroke="#e2e8e8"/><text class="curve-label" x="${L-8}" y="${y(v)+4}" text-anchor="end">${num(v)} ${unit}</text>`}s+=`<polyline points="${points.map(p=>x(p[0])+','+y(p[1])).join(' ')}" fill="none" stroke="#007e76" stroke-width="3"/>`;for(let i=0;i<=4;i++)s+=`<text class="curve-label" x="${x(maxX*i/4)}" y="${h-8}" text-anchor="middle">${num(maxX*i/4/60,1)}′</text>`;return s+'</svg>'}
+function curves(c){const w=600,h=210,L=50,R=15,U=15,B=28,series=c.athletes.map(a=>Array.from({length:41},(_,j)=>{const t=j/4;return [t,a.pace+a.decay*Math.pow(t/5,a.exponent)+a.residual*t/10]})),min=Math.floor(Math.min(...c.athletes.map(a=>a.pace))/10)*10,max=Math.max(...series.flat().map(p=>p[1]))+5;const x=t=>L+t/10*(w-L-R),y=p=>h-B-(p-min)/(max-min)*(h-U-B);let svg=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Curvas de parcial instantáneo por duración de relevo; subir significa ir más lento">`;for(let i=0;i<4;i++){const p=min+(max-min)*i/3;svg+=`<line x1="${L}" x2="${w-R}" y1="${y(p)}" y2="${y(p)}" stroke="#e2e8e8"/><text class="curve-label" x="${L-8}" y="${y(p)+4}" text-anchor="end">${split(p)}</text>`}series.forEach((ss,i)=>svg+=`<polyline points="${ss.map(p=>x(p[0])+','+y(p[1])).join(' ')}" fill="none" stroke="${COLORS[i]}" stroke-width="2"/>`);for(let i=0;i<=10;i+=2)svg+=`<text class="curve-label" x="${x(i)}" y="${h-6}" text-anchor="middle">${i}′</text>`;$('curves').innerHTML=svg+'</svg>';$('curvelegend').innerHTML=c.athletes.map((a,i)=>`<span><span class="dot" style="background:${COLORS[i]}"></span>${esc(a.name)}</span>`).join('')}
+function render(c,r){const free=(c.orderMode||'free')==='free';$('orderhint').textContent=(free?'La secuencia escrita es el punto de partida: el optimizador puede cambiar su orden y repetir entradas.':'El optimizador respetará exactamente esta secuencia; solo ajustará la duración por remero.')+' El ciclo se repite hasta terminar la carrera. La simulación siempre usa el orden escrito.';$('orderPreview').textContent='Ciclo actual: '+c.sequence.map(i=>c.athletes[i].name).join(' → ');$('optimize').textContent=free?'Optimizar orden y duraciones':'Optimizar duraciones';lastConfig=c;lastResult=r;curves(c);$('distance').textContent=num(r.meters)+' m';$('pace').textContent=r.meters?split(c.race*60*500/r.meters):'—';$('lost').textContent=clock(r.lost);$('changeslabel').textContent=r.changes+' cambios · '+num(r.lost/(c.race*60)*100,1)+' % de carrera';$('share').textContent=num(r.stats[0].time/60,1)+' min';$('sharelabel').textContent=c.athletes[0].name+' · '+num(r.stats[0].time/(c.race*60)*100,1)+' % de carrera';$('middle').textContent=num(c.race/2,1)+' min';$('end').textContent=c.race+' min';$('timeline').innerHTML=r.events.map(e=>`<div class="segment" style="width:${(e.end-e.start)/(c.race*60)*100}%;background:${e.type==='row'?COLORS[e.i]:e.type==='idle'?'#cad3d4':'#e5e9e9'}" title="${esc(e.type==='row'?c.athletes[e.i].name:e.type==='change'?'Cambio':'Inactivo')} · ${clock(e.start)}–${clock(e.end)}"></div>`).join('');$('legend').innerHTML=c.athletes.map((a,i)=>`<span><span class="dot" style="background:${COLORS[i]}"></span>${esc(a.name)}</span>`).join('')+'<span><span class="dot" style="background:#e5e9e9"></span>Cambios / inactivo</span>';$('summary').innerHTML=r.stats.map((s,i)=>`<tr><td><span class="dot" style="background:${COLORS[i]}"></span>${esc(c.athletes[i].name)}</td><td>${clock(s.time)}</td><td>${num(s.time/(c.race*60)*100,1)} %</td><td>${num(s.meters)} m</td><td>${s.time?split(s.time*500/s.meters):'—'}</td><td>${s.turns}</td></tr>`).join('');$('stints').innerHTML=r.events.map(e=>`<tr><td>${clock(e.start)} → ${clock(e.end)}</td><td>${e.type==='row'?esc(c.athletes[e.i].name):e.type==='change'?'Cambio':'Inactivo'}</td><td>${clock(e.end-e.start)}</td><td>${num(e.meters)}</td><td>${e.type==='row'?split((e.end-e.start)*500/e.meters):'—'}</td></tr>`).join('');$('distancechart').innerHTML=chart([...r.points,[c.race*60,r.meters]]);$('compare').innerHTML=[{name:'Tu estrategia',r},...[2,5].map(n=>({name:'Todos a '+n+' min',r:simulate({...c,athletes:c.athletes.map(a=>({...a,stint:n}))},false)}))].map(({name,r:rr})=>`<div><span class="tiny">${name}</span><strong>${num(rr.meters)} m</strong><span class="tiny">${num(rr.meters-r.meters)} m vs. actual${rr.valid?'':' · No cumple mínimos'}</span></div>`).join('');const warnings=[];r.stats.forEach((s,i)=>{if(s.time+1e-6<c.athletes[i].min*60)warnings.push(`${esc(c.athletes[i].name)} no llega al mínimo total (${num(s.time/60,1)} de ${c.athletes[i].min} min).`)});if(r.events.some(e=>e.type==='idle'))warnings.push('Queda tiempo inactivo: se han agotado los máximos de los remeros incluidos en el orden.');if(c.athletes.some(a=>a.stint<a.lo||a.stint>a.hi))warnings.push('Hay duraciones actuales fuera de los límites de búsqueda; la simulación las conserva.');$('messages').innerHTML=warnings.length?'<div class="notice error">'+warnings.join('<br>')+'</div>':'';document.querySelectorAll('[data-fatname]').forEach(el=>el.textContent=c.athletes[+el.dataset.fatname].name)}
+function run(){try{const c=read();render(c,simulate(c));$('optimization').innerHTML='';lastOptimization=null;$('status').textContent='Proyección actualizada.';return true}catch(e){$('messages').innerHTML='<div class="notice error">'+esc(e.message)+'</div>';$('status').textContent='Revisa los parámetros; los resultados anteriores no se han actualizado.';return false}}
+function download(name,text,type){const u=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+$('simulate').onclick=run;
+$('zero').onclick=()=>{document.querySelectorAll('[data-key="decay"],[data-key="residual"]').forEach(el=>el.value=0);run()};
+$('reset').onclick=()=>{mount(defaults());run()};
+$('save').onclick=()=>{try{download('row-or-die-parametros.json',JSON.stringify({version:1,config:read()},null,2),'application/json')}catch(e){$('messages').textContent=e.message}};
+$('load').onclick=()=>$('file').click();$('file').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>100000)throw Error('El archivo de parámetros es demasiado grande.');const data=JSON.parse(await f.text());if(data.version!==1)throw Error('Versión de parámetros no compatible.');validate(data.config);mount(data.config);run()}catch(err){$('messages').innerHTML='<div class="notice error">'+esc(err.message)+'</div>'}e.target.value=''};
+$('export').onclick=()=>{if(!run())return;const cell=s=>'"'+String(s).replace(/"/g,'""')+'"';const rows=[['Inicio','Fin','Remero','Duración','Metros','Parcial medio'],...lastResult.events.map(e=>[clock(e.start),clock(e.end),e.type==='row'?lastConfig.athletes[e.i].name:e.type==='change'?'Cambio':'Inactivo',clock(e.end-e.start),e.meters.toFixed(1),e.type==='row'?split((e.end-e.start)*500/e.meters):''])];download('row-or-die-plan.csv','\ufeff'+rows.map(row=>row.map(cell).join(',')).join('\r\n'),'text/csv;charset=utf-8')};
+$('optimize').onclick=()=>{
+ clearTimeout(timer);if(!run())return;
+ const baseline=lastResult.meters,c=lastConfig;
+ const controls=[...document.querySelectorAll('button,input,select')];controls.forEach(b=>b.disabled=true);
+ $('status').textContent='Buscando relevos y repartos…';
+ let worker=null,url=null,fallbackStarted=false,finished=false;
+ const cleanup=()=>{if(worker){worker.terminate();worker=null}if(url){URL.revokeObjectURL(url);url=null}};
+ const finish=()=>{cleanup();controls.forEach(b=>b.disabled=false)};
+ const fail=err=>{finished=true;finish();$('status').textContent='No se pudo terminar la búsqueda: '+err.message};
+ const complete=result=>{
+  if(finished)return;finished=true;finish();const {best,evals,orders,mode}=result;
+  if(!best){$('status').textContent='No se encontró un plan que cumpla todos los mínimos. Ajusta los límites o la rejilla; se conserva tu estrategia.';return}
+  mount(best.c);render(best.c,simulate(best.c));lastOptimization={baseline,evals};
+  const delta=best.meters-baseline;
+  $('optimization').innerHTML=`<div class="notice"><strong>${delta>=0?'+':''}${num(delta)} metros de variación estimada</strong> frente a tu estrategia anterior (${num(baseline)} m). Se han evaluado ${num(evals)} combinaciones en ${num(orders)} órdenes distintos. ${mode==='fixed'?'Tu orden se ha conservado; solo cambian las duraciones.':'Se han optimizado el orden, la frecuencia de entrada y las duraciones.'} Orden propuesto: ${best.c.sequence.map(i=>esc(best.c.athletes[i].name)).join(' → ')}. Las duraciones de la tabla ya están actualizadas.</div>`;
+  $('status').textContent='Mejor propuesta encontrada; cumple los límites totales. Revisa su viabilidad con un ensayo real.';
+ };
+ // A cooperative fallback supports viewers which disallow Blob workers.
+ const fallback=()=>{
+  if(fallbackStarted||finished)return;fallbackStarted=true;cleanup();
+  const search=optimizerSearch(c);
+  const next=()=>{if(finished)return;try{const step=search.next();if(step.done){complete(step.value);return}$('status').textContent='Buscando relevos y repartos… '+num(step.value.evals)+' combinaciones evaluadas · '+step.value.phase+'.';setTimeout(next,16)}catch(err){fail(err)}};
+  setTimeout(next,30);
+ };
+ try{
+  if($('compat').checked||typeof Worker==='undefined'||typeof URL.createObjectURL!=='function'){fallback();return}
+  const source=simulate.toString()+'\n'+optimizerSearch.toString()+'\n'+optimizer.toString()+'\nonmessage=e=>{try{postMessage({result:optimizer(e.data)})}catch(err){postMessage({error:err.message})}}';
+  url=URL.createObjectURL(new Blob([source],{type:'application/javascript'}));worker=new Worker(url);
+  worker.onmessage=e=>{if(e.data.error){fallback();return}complete(e.data.result)};
+  worker.onerror=event=>{event.preventDefault();fallback()};worker.postMessage(c);
+ }catch(err){fallback()}
+};
+let timer;document.querySelectorAll('.setup').forEach(section=>section.addEventListener('input',e=>{if(e.target.matches('input,select')){clearTimeout(timer);timer=setTimeout(run,450)}}));
+$('localhint').hidden=location.protocol!=='file:';
+mount(defaults());run();
+</script></body></html>
